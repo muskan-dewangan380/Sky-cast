@@ -1,4 +1,61 @@
-# ------------------- GUI SETUP -------------------
+weather_app_gui_india.py
+
+import requests
+from datetime import datetime
+import tkinter as tk
+from tkinter import messagebox
+
+def get_weather():
+    city = city_entry.get().strip()
+    if not city:
+        messagebox.showwarning("Input Error", "Please enter a city name.")
+        return
+
+    api_key = "88dcc494b09f1373a3781f237d4d412a"  
+    base_url = "https://api.openweathermap.org/data/2.5/weather"
+
+    params = {
+        "q": f"{city},IN",
+        "appid": api_key,
+        "units": "metric",
+        "lang": "en"
+    }
+
+    try:
+        response = requests.get(base_url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+
+            city_name = data['name']
+            temp = data['main']['temp']
+            feels_like = data['main']['feels_like']
+            humidity = data['main']['humidity']
+            pressure = data['main']['pressure']
+            wind = data['wind']['speed']
+            condition = data['weather'][0]['description'].capitalize()
+            sunrise = datetime.fromtimestamp(data['sys']['sunrise']).strftime("%I:%M %p")
+            sunset = datetime.fromtimestamp(data['sys']['sunset']).strftime("%I:%M %p")
+
+            result_label.config(
+                text=(
+                    f" {city_name}, IN\n"
+                    f" Temperature: {temp}°C (Feels like {feels_like}°C)\n"
+                    f" Condition: {condition}\n"
+                    f" Humidity: {humidity}% | 🧭 Pressure: {pressure} hPa\n"
+                    f" Wind: {wind} m/s\n"
+                    f" Sunrise: {sunrise} | 🌇 Sunset: {sunset}"
+                ),
+                fg="#003366"
+            )
+
+        elif response.status_code == 404:
+            messagebox.showerror("Error", "City not found. Try another city.")
+        else:
+            messagebox.showerror("Error", f"Failed to fetch data. (Code: {response.status_code})")
+
+    except Exception as e:
+        messagebox.showerror("Connection Error", f"Something went wrong:\n{e}")
+
 root = tk.Tk()
 root.title("🌦 Smart Weather App - India")
 root.geometry("500x400")
