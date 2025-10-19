@@ -1,4 +1,4 @@
-weather_app_gui_india.py
+#weather_app_gui_india.py
 
 import requests
 from datetime import datetime
@@ -55,7 +55,7 @@ def get_weather():
 
     except Exception as e:
         messagebox.showerror("Connection Error", f"Something went wrong:\n{e}")
-
+#GUI SETUP
 root = tk.Tk()
 root.title("🌦 Smart Weather App - India")
 root.geometry("500x400")
